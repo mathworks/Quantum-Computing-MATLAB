@@ -5,33 +5,23 @@ digitDatasetPath = fullfile(matlabroot,'toolbox','nnet','nndemos', ...
 imds = imageDatastore(digitDatasetPath, ...
     'IncludeSubfolders',true,'LabelSource','foldernames');
 
-% Take some data corresponding to digits 0 and 1
+% Take data corresponding to digits 0 and 1
 classLabels = ["0" "1"];
 numClasses = length(classLabels);
-numSamplesPerClass = 500;
-N = numClasses*numSamplesPerClass;
 
+% Partition into train and test sets
 rng default
-[imds01,imdsOthers] = splitEachLabel(imds,numSamplesPerClass,'randomize','Include',classLabels);
+[imdsTrain,imdsTest] = splitEachLabel(imds,0.8,'randomize','Include',classLabels);
 
-X = zeros(N, 16);
-Y = categorical(imds01.Labels, classLabels);
+% Process images into features and labels
+[trainX,trainY] = processIMDS(imdsTrain);
+[testX,testY] = processIMDS(imdsTest);
 
-% Downscale samples 4x4 images of greyscale intensity
-for i = 1:N
-x = imresize(readimage(imds01,i), [4 4]);
-X(i, :) = reshape( double(x) ./ 255 , [1 16]);
-end
-
-% Features are the rescaled 8 principle components with highest variance
-[~, scores, ~, ~, ~] = pca(X, NumComponents=8);
-X = rescale(scores, 0, pi/2);
-
-% Build and train the network
-inputSize = size(X,2);
+% Build the network and train it using local resources
+inputSize = size(trainX,2);
 layers = [
     featureInputLayer(inputSize)
-    PQCLayer
+    PQCLayer("local")
     fullyConnectedLayer(numClasses)
     softmaxLayer
     classificationLayer];
@@ -40,6 +30,47 @@ options = trainingOptions("adam", ...
     MiniBatchSize=20, ...
     InitialLearnRate=0.1, ...
     ExecutionEnvironment="gpu", ...
-    Verbose=true, MaxEpochs=30, Plots="training-progress");
+    Verbose=true, ...
+    Plots="training-progress");
 
-net = trainNetwork(X,Y,layers,options);
+localNet = trainNetwork(trainX,trainY,layers,options);
+
+% Test the network using remote resources
+
+dev = quantum.backend.QuantumDeviceAWS('sv1');
+
+% Construct a new network using the locally trained parameters, but specify
+% the PQCLayer to execute on the remote device.
+layers = [
+    localNet.Layers(1)
+    PQCLayer(dev, localNet.Layers(2).Weights)
+    localNet.Layers(3:5)
+    ];
+
+remoteNet = SeriesNetwork(layers);
+
+% Submit 1 sample to evaluate the model 
+predY = classify(remoteNet, testX(1,:));
+
+
+function [X,Y] = processIMDS(imds)
+% Helper to process MNIST images into features data X and labels Y
+% Input images (28,28) -> Scaled images (4,4) -> PCA features (1,8)
+arguments
+    imds (1,1) matlab.io.datastore.ImageDatastore
+end
+
+classLabels = unique(imds.Labels);
+Y = categorical(imds.Labels, classLabels);
+
+numSamples = size(imds.Labels,1);
+X = zeros(numSamples, 28*28);
+for i = 1:numSamples
+    % x = imresize(readimage(imds,i), [4 4]);
+    % X(i, :) = reshape( double(x) ./ 255 , [1 16]);
+    X(i,:) = reshape(double(readimage(imds, i)) ./ 255, [1 28*28]);
+end
+
+[~, scores, ~, ~, ~] = pca(X, NumComponents=8);
+X = rescale(scores, 0, pi/2);
+end
