@@ -3,10 +3,22 @@ classdef PQCLayer < nnet.layer.Layer
         Weights
     end
 
+    properties
+        Backend
+        numLearnables = 14;
+    end
+
     methods
-        function layer = PQCLayer
-            numLearnables = 14;
-            layer.Weights = rand(numLearnables,1);
+        function layer = PQCLayer(backend, weights)
+            arguments
+                backend = "local"
+                weights = rand(14, 1)
+            end        
+
+            assert(isequal(size(weights), [layer.numLearnables 1]))
+
+            layer.Backend = backend;
+            layer.Weights = weights;
         end
 
         function Z = predict(layer, X)
@@ -14,7 +26,7 @@ classdef PQCLayer < nnet.layer.Layer
             % layer and outputs the result Z. This method is used during
             % prediction.
 
-             Z = expval(X, layer.Weights);
+             Z = expval(X, layer.Weights, layer.Backend);
         end
 
         function [Z,memory] = forward(layer, X)
@@ -22,7 +34,7 @@ classdef PQCLayer < nnet.layer.Layer
             % layer and outputs the result Z. This method is used during
             % training.
 
-            Z = expval(X, layer.Weights);
+            Z = expval(X, layer.Weights, layer.Backend);
             memory = [];
         end
 
@@ -49,11 +61,11 @@ classdef PQCLayer < nnet.layer.Layer
                 % Parameter-Shift 
                 WPlus = layer.Weights;
                 WPlus(i) = WPlus(i) + s;
-                ZPlus = expval(X, WPlus);
+                ZPlus = expval(X, WPlus, layer.Backend);
 
                 WMinus = layer.Weights;
                 WMinus(i) = WMinus(i) - s;
-                ZMinus = expval(X,WMinus);   
+                ZMinus = expval(X,WMinus, layer.Backend);   
 
                 dZdWi = (ZPlus - ZMinus)/(2*sin(s));
                 dLdW(i) = sum(dLdZ .* dZdWi, 'all');
@@ -66,10 +78,10 @@ classdef PQCLayer < nnet.layer.Layer
     end
 end
 
-function Z = expval(X, weights)
+function Z = expval(X, weights, backend)
 
 numSamples = size(X,2);
-numQubits = size(X,1); % each qubit encodes a pixel
+numQubits = size(X,1); % Each qubit encodes a pixel
 Z = zeros(1,numSamples,'like',X);
 readout = 6; 
 
@@ -82,11 +94,22 @@ paramGates = [ryGate(1:numQubits, weights(1:numQubits))
               cxGate(3, 6)];
 
 for i = 1:numSamples
-    % Encode features and compute expectation value 
-    % of Pauli Z operator on the measured qubit
+    % Encode features
     encodingGates = [ryGate(1:numQubits, 2*X(:,i))];
     mdl = quantumCircuit([encodingGates; paramGates]);
-    sv = simulate(mdl);
-    Z(i) = probability(sv,readout,"0") - probability(sv,readout,"1");
+
+    if isequal(backend, "local")
+        % Simulate model using local resources
+        result = simulate(mdl);
+    else
+        assert(isa(backend, "quantum.backend.QuantumDeviceAWS"))
+        % Run model using remote resources
+        task = run(mdl, backend);
+        wait(task)
+        result = fetchOutput(task);
+    end
+    
+    % Compute expectation value of Pauli Z operator on the measured qubit
+    Z(i) = probability(result,readout,"0") - probability(result,readout,"1");
 end
 end
