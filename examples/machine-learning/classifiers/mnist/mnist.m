@@ -55,7 +55,7 @@ predY = classify(remoteNet, testX(1,:));
 
 function [X,Y] = processIMDS(imds)
 % Helper to process MNIST images into features data X and labels Y
-% Input images (28,28) -> Scaled images (4,4) -> PCA features (1,8)
+% Input images (28,28) -> PCA features (1,8)
 arguments
     imds (1,1) matlab.io.datastore.ImageDatastore
 end
@@ -66,8 +66,6 @@ Y = categorical(imds.Labels, classLabels);
 numSamples = size(imds.Labels,1);
 X = zeros(numSamples, 28*28);
 for i = 1:numSamples
-    % x = imresize(readimage(imds,i), [4 4]);
-    % X(i, :) = reshape( double(x) ./ 255 , [1 16]);
     X(i,:) = reshape(double(readimage(imds, i)) ./ 255, [1 28*28]);
 end
 
