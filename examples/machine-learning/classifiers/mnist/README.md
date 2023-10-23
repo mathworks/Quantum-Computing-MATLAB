@@ -1,9 +1,13 @@
 # Quantum Classifier Network for MNIST Images  
 
 This example simulates the training of a quantum neural network for a binary classification
-task on the MNIST dataset. The data pre-processing and circuit struture is inspired from [1] and [2].
+task on the MNIST dataset. The quantum network is trained locally and evaluated 
+on a remote device. The data pre-processing and circuit struture is inspired from [1].
 
-The training progress is displayed below and is comparable to Figure 3 of [1]. 
+The same binary classification is compared to a fully-classical neural network [2].
+
+The training progress of the quantum network is displayed below and is comparable
+to Figure 3 of [1]. 
 
 ![](mnist-training-results.png?raw=true)
 
