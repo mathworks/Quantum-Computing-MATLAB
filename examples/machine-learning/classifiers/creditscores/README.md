@@ -20,9 +20,9 @@ openExample('stats/creditratingdemo')
 
 The diagonal elements represent the models making the correct prediction
 
-![](confusionTestClassical.png.png.png?raw=true)
+![](confusionTestClassical.png?raw=true)
 
-![](confusionTestQuantum.png.png?raw=true)
+![](confusionTestQuantum.png?raw=true)
 
 The diagonal elements represent the number of times the two models make
 the same prediction.
