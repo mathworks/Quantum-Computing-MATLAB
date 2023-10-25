@@ -73,7 +73,7 @@ numQubits = size(X,1); % Each qubit encodes a pixel
 Z = zeros(1,numSamples,'like',X);
 readout = 3; 
 
-% TTN Classifier 
+% TTN Classifier, see Figure 6 [1]
 paramGates = [ryGate(1:numQubits, weights(1:numQubits))
               cxGate([1 4], [2 3])
               ryGate([2 3], weights(numQubits+1:end-1))
@@ -86,9 +86,8 @@ for i = 1:numSamples
     encodingGates = [ryGate(1:numQubits, 2*X(:,i))];
     mdl = quantumCircuit([encodingGates; paramGates]);
 
-    result = simulate(mdl);
-
     % Compute expectation value of Pauli Z operator on the measured qubit
-    Z(i) = probability(result,readout,"0") - probability(result,readout,"1");
+    sv = simulate(mdl);
+    Z(i) = probability(sv,readout,"0") - probability(sv,readout,"1");
 end
 end

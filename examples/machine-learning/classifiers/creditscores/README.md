@@ -1,12 +1,12 @@
 ## Classifying Credit Ratings with Classical and Quantum Models
 
 This example compares classical and quantum models for a binary classification
-task on credit rating data. Using labeled data from [2], both models are 
-trained and evaluated on unseen test data. The generalization of both models 
-is compared by also evaluating on unlabeled data. 
+task on synthetic credit rating data. Using labeled data from [2], both models are 
+trained and evaluated on unseen test data. A new credit dataset of unlabeled 
+data is used to compare the predictions of both models.
 
-The quantum model is based on [1], and is fully simulated without noise
-during training and testing. 
+The quantum circuit is based on Tree Tensor Network (TTN) structure [1] and
+is simulated without noise during training and test evaluation.  
 
 Data is available with the Statistics and Machine Learning Toolbox. It can
 be accessed by opening the example [2]:
@@ -14,18 +14,17 @@ be accessed by opening the example [2]:
 openExample('stats/creditratingdemo')
 ```
 
-openExample('stats/creditratingdemo')
-
 ## Results on Labeled and Unlabeled Test Data 
 
-The diagonal elements represent the models making the correct prediction
+In the two figures below, diagonal elements represent the respective model
+making the correct prediction on unseen labeled samples.
 
 ![](confusionTestClassical.png?raw=true)
 
 ![](confusionTestQuantum.png?raw=true)
 
-The diagonal elements represent the number of times the two models make
-the same prediction.
+Here, the diagonal elements represent the two models making the same 
+prediction on an unknown sample.
 
 ![](confusionUnlabeledTestBoth.png?raw=true)
 

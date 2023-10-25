@@ -1,10 +1,9 @@
-%% Classifying Credit Ratings 
 
 % Load and process the data into labeled samples with 4 features
 labeledData = readtable("CreditRating_Historical.dat");
 [X, Y] = processCreditData(labeledData);
 
-% numeric (1,4) -> categorical {better, worse}
+% numeric features (1,4) -> categorical label {better, worse}
 
 numSamples = size(X,1);
 numFeatures = size(X,2);
@@ -35,8 +34,8 @@ title('Classical Model Predictions on Labeled Data')
 
 %% Evaluate Quantum Model
 
-% Quantum network using a qubit to encode each feature with classical
-% output processing
+% Quantum TTN circuit (Figure 6 [1]) with classical processing
+% on the expectation value of a qubit 
 % layers = [
 %     featureInputLayer(numFeatures)
 %     quantumCircuitLayer
@@ -63,7 +62,7 @@ figure
 confusionchart(testY, predY)
 title('Quantum Model Predictions on Labeled Data')
 
-%% Model Generalization
+%% Evaluate Models on New Data
 
 % The quantum and classical models were tested using unseen labeled data.
 % Now compare the predictions of both models on unlabeled data.
@@ -71,17 +70,17 @@ title('Quantum Model Predictions on Labeled Data')
 unlabeledData = readtable("CreditRating_NewCompanies.dat");
 X = processCreditData(unlabeledData);
 
-Y2 = predict(dTree, X);
+Y1 = predict(dTree, X);
 
-Y1 = classify(net, X);
+Y2 = classify(net, X);
 
 figure
-cm = confusionchart(categorical(Y2), Y1);
+cm = confusionchart(categorical(Y1), Y2);
 cm.XLabel = "Classical";
 cm.YLabel = "Quantum";
 title('Model Predictions on Unlabeled Data')
 
-%% Helper to Process Credit Rating Data
+%% Create Features and Labels from Credit Rating Data
 
 function [X,Y] = processCreditData(data)
 % Ratings {A,AA,AAA,B} are labeled as better and {BB,BBB,C} are labeled
@@ -109,6 +108,7 @@ hasLabels = ismember('Rating', vars);
 if hasLabels
     Y = categorical(repmat("worse", [numSamples 1]));
 else
+    % Unused default output when data doesn't have labels
     Y = missing;
 end
 
