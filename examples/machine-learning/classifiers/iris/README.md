@@ -30,7 +30,7 @@ device used 100 shots.
 
 ![](confusionTestIBM.png?raw=true)
 
-![](confusionTestAWS.png?raw=true)
+![](confusionTestIonQ.png?raw=true)
 
 ## Required Products
 - MATLAB&reg; Support Package for Quantum Computing
