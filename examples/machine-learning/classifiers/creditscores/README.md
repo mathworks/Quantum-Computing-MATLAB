@@ -10,7 +10,7 @@ The quantum model is based on a Tree Tensor Network (TTN) circuit structure
 quantum hardware as well as simulation. The classical model is a conventional
 bagged decision tree. 
 
-Details of data pre-processing are shown in the ```matlab processCreditData.m```
+Details of data pre-processing are shown in the ```processCreditData.m```
 function. The raw data is available with the Statistics and Machine 
 Learning Toolbox. It can be accessed by opening the example [2]:
 ```matlab
@@ -19,21 +19,21 @@ openExample('stats/creditratingdemo')
 
 ## Simulation and Hardware Test Results 
 
-Models were trained using 99% of the data, and tested on the remaining 1%. 
-Only 10 samples from the test set were evaluated on real hardware. Diagonal 
-elements represent the correct prediction.
+Models were trained using 99% of the data, and tested on the remaining 1%.
+Diagonal elements represent the correct prediction.
 
 ![](confusionTestClassical.png?raw=true)
 
 ![](confusionTestQuantum.png?raw=true)
 
-The Aria 1 quantum device was used with 100 shots to classify each sample. 
+The Aria 1 quantum device was used with 100 shots to classify 10 samples
+from the test set.
 
 ![](confusionTestHardware.png?raw=true)
 
 ## Simulation Test Results on New Data
 
-Using new and unlabeled data, both models were simulated to test
+Using new and unlabeled data, both models were simulated to test the
 similarity of their predictions. Here, the diagonal elements represent the
 two models making the same prediction on unknown samples. The models agree 
 on many predictions, but the true accuracy is unknown.
