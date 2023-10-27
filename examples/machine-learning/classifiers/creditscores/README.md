@@ -2,29 +2,41 @@
 
 This example compares classical and quantum models for a binary classification
 task on synthetic credit rating data. Using labeled data from [2], both models are 
-trained and evaluated on unseen test data. A new credit dataset of unlabeled 
-data is used to compare the predictions of both models.
+trained and evaluated on unseen test data. New samples of unlabeled data
+are used to compare the simulated predictions of both models.
 
-The quantum circuit is based on Tree Tensor Network (TTN) structure [1] and
-is simulated without noise during training and test evaluation.  
+The quantum model is based on a Tree Tensor Network (TTN) circuit structure
+[1] with post-processing. It was trained classically, and tested on real
+quantum hardware as well as simulation. The classical model is a conventional
+bagged decision tree. 
 
-Data is available with the Statistics and Machine Learning Toolbox. It can
-be accessed by opening the example [2]:
+Details of data pre-processing are shown in the ```matlab processCreditData.m```
+function. The raw data is available with the Statistics and Machine 
+Learning Toolbox. It can be accessed by opening the example [2]:
 ```matlab
 openExample('stats/creditratingdemo')
 ```
 
-## Results on Labeled and Unlabeled Test Data 
+## Simulation and Hardware Test Results 
 
-In the two figures below, diagonal elements represent the respective model
-making the correct prediction on unseen labeled samples.
+Models were trained using 99% of the data, and tested on the remaining 1%. 
+Only 10 samples from the test set were evaluated on real hardware. Diagonal 
+elements represent the correct prediction.
 
 ![](confusionTestClassical.png?raw=true)
 
 ![](confusionTestQuantum.png?raw=true)
 
-Here, the diagonal elements represent the two models making the same 
-prediction on an unknown sample.
+The Aria 1 quantum device was used with 100 shots to classify each sample. 
+
+![](confusionTestHardware.png?raw=true)
+
+## Simulation Test Results on New Data
+
+Using new and unlabeled data, both models were simulated to test
+similarity of their predictions. Here, the diagonal elements represent the
+two models making the same prediction on unknown samples. The models agree 
+on many predictions, but the true accuracy is unknown.
 
 ![](confusionUnlabeledTestBoth.png?raw=true)
 
