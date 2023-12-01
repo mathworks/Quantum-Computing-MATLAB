@@ -31,7 +31,7 @@ decision tree model.
 The IBM Algiers quantum device was used with 1000 shots to classify the
 test set.
 
-![](confusionTestHardwareAria1.png?raw=true)
+![](confusionTestHardwareAlgiers.png?raw=true)
 
 The Aria 1 quantum device was used with 100 shots to classify 10 samples
 from the test set.
