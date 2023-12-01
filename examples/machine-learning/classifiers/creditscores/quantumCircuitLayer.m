@@ -87,7 +87,7 @@ for i = 1:numSamples
     mdl = quantumCircuit([encodingGates; paramGates]);
 
     % Compute expectation value of Pauli Z operator on the measured qubit
-    sv = simulate(mdl);
-    Z(i) = probability(sv,readout,"0") - probability(sv,readout,"1");
+    result = simulate(mdl);
+    Z(i) = probability(result,readout,"0") - probability(result,readout,"1");
 end
 end

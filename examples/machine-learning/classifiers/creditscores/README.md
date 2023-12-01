@@ -20,16 +20,23 @@ openExample('stats/creditratingdemo')
 ## Simulation and Hardware Test Results 
 
 Models were trained using 99% of the data, and tested on the remaining 1%.
-Diagonal elements represent the correct prediction.
+Diagonal elements represent the correct test prediction. The simulated 
+quantum model performs slighly better on test data than the classical
+decision tree model.
 
 ![](confusionTestClassical.png?raw=true)
 
 ![](confusionTestQuantum.png?raw=true)
 
+The IBM Algiers quantum device was used with 1000 shots to classify the
+test set.
+
+![](confusionTestHardwareAria1.png?raw=true)
+
 The Aria 1 quantum device was used with 100 shots to classify 10 samples
 from the test set.
 
-![](confusionTestHardware.png?raw=true)
+![](confusionTestHardwareAria1.png?raw=true)
 
 ## Simulation Test Results on New Data
 

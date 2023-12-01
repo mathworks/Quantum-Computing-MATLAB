@@ -20,6 +20,7 @@ trainY = Y(idx);
 testX = X(~idx,:);
 testY = Y(~idx);
 
+% Save the test data so it can be loaded when running on hardware
 save('testDataCredit.mat', 'testX', 'testY')
 
 %% Evaluate Classical Model
@@ -33,7 +34,7 @@ predY = predict(dTree, testX);
 figure
 accur = sum(testY==categorical(predY))/numel(testY);
 confusionchart(testY, categorical(predY))
-title('Classical Test Accuracy: '+string(accur))
+title("Classical Test Results")
 
 %% Evaluate Quantum Model
 
@@ -47,42 +48,41 @@ title('Classical Test Accuracy: '+string(accur))
 %     classificationLayer];
 % 
 % options = trainingOptions("adam", ...
-%     MiniBatchSize=20, ...
+%     MiniBatchSize=50, ...
 %     InitialLearnRate=0.01, ...
 %     ExecutionEnvironment="cpu", ...
 %     Verbose=false, ...
 %     MaxEpochs=25, ...
 %     Plots="training-progress");
-
+% 
 % net = trainNetwork(trainX,trainY,layers,options);
 % save('trainedNetwork.mat', 'net')
 
 trained = load('trainedNetwork.mat');
 net = trained.net;
-
+ 
 predY = classify(net, testX);
 
 figure
 accur = sum(testY==predY)/numel(testY);
 confusionchart(testY, predY);
-title('Quantum Simulation Test Accuracy: '+string(accur))
+title("Simulation Test Results")
 
 %% Evaluate Models on New Data
 
 % The quantum and classical models were tested using unseen labeled data.
-% Now compare the predictions of both models on unlabeled data.
+% Now compare the predictions of both models on new unlabeled data.
 
-unlabeledData = readtable("CreditRating_NewCompanies.dat");
-X = processCreditData(unlabeledData);
-
-Y1 = predict(dTree, X);
-Y1 = categorical(Y1);
-
-Y2 = classify(net, X);
-
-figure
-accur = sum(Y1==Y2)/size(X,1);
-cm = confusionchart(Y1, Y2);
-cm.XLabel = "Classical";
-cm.YLabel = "Quantum";
-title("Model Agreement Frequency on New Data: "+string(accur))
+% unlabeledData = readtable("CreditRating_NewCompanies.dat");
+% X = processCreditData(unlabeledData);
+% 
+% Y1 = predict(dTree, X);
+% Y1 = categorical(Y1);
+% 
+% Y2 = classify(net, X);
+% 
+% figure
+% accur = sum(Y1==Y2)/size(X,1);
+% cm = confusionchart(Y1, Y2);
+% cm.XLabel = "Classical";
+% cm.YLabel = "Quantum";
