@@ -6,9 +6,9 @@ Support Package for Quantum Computing](https://www.mathworks.com/help/matlab/qua
 
 ## Required Products
 - MATLAB&reg; Support Package for Quantum Computing (version 23.2.0)
-- Connection to remote quantum devices and simulators requires additional setup. For more information go to:
-      [Run Quantum Circuit on Hardware Using AWS](https://www.mathworks.com/help/matlab/math/run-quantum-circuit-on-hardware.html)
-      [Run Quantum Circuit on Hardware Using IBM](https://www.mathworks.com/help/matlab/math/run-quantum-circuit-on-hardware-using-IBM.html)
+- Connection to remote quantum devices and simulators requires additional setup. For more information go to
+    [Run Quantum Circuit on Hardware Using AWS](https://www.mathworks.com/help/matlab/math/run-quantum-circuit-on-hardware.html)
+    [Run Quantum Circuit on Hardware Using IBM](https://www.mathworks.com/help/matlab/math/run-quantum-circuit-on-hardware-using-IBM.html)
 - Examples may depend on other products which are listed in each respective README file.
 
 
