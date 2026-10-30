@@ -1,0 +1,5 @@
+*.asv
+ClinicalTrialSiteSelection.pdf
+result*.json
+latest_results.mat
+myawsConfig.env
